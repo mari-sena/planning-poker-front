@@ -1,4 +1,46 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+
 export default function SessionCreation() {
+  const [sessionName, setSessionName] = useState("");
+  const [participantName, setParticipantName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setErrorMessage("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionName,
+          participantName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao criar sessão.");
+      }
+
+      const data = await response.json();
+
+      console.log("Sessão criada:", data);
+    } catch (error) {
+      setErrorMessage("Não foi possível criar a sessão.");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <section className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
       <div className="mb-8 text-center">
@@ -8,7 +50,7 @@ export default function SessionCreation() {
         </p>
       </div>
 
-      <form className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label
             htmlFor="sessionName"
@@ -21,6 +63,8 @@ export default function SessionCreation() {
             id="sessionName"
             name="sessionName"
             type="text"
+            value={sessionName}
+            onChange={(event) => setSessionName(event.target.value)}
             className="w-full rounded-xl bg-zinc-950 border border-zinc-700 px-4 py-3 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500"
           />
         </div>
@@ -37,15 +81,20 @@ export default function SessionCreation() {
             id="participantName"
             name="participantName"
             type="text"
+            value={participantName}
+            onChange={(event) => setParticipantName(event.target.value)}
             className="w-full rounded-xl bg-zinc-950 border border-zinc-700 px-4 py-3 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500"
           />
         </div>
 
+        {errorMessage && <p className="text-sm text-red-400">{errorMessage}</p>}
+
         <button
           type="submit"
-          className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors py-3 font-semibold"
+          disabled={isLoading}
+          className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 transition-colors py-3 font-semibold"
         >
-          Criar sessão
+          {isLoading ? "Criando..." : "Criar sessão"}
         </button>
       </form>
     </section>
