@@ -1,3 +1,5 @@
+import { PlanningCard } from "@/src/components/molecules";
+
 type SessionRoomPageProps = {
   params: Promise<{
     sessionId: string;
@@ -29,6 +31,10 @@ export default async function SessionRoomPage({
               {creator ?? "Não informado"}
             </span>
           </p>
+
+          <div className="grid grid-cols-5 gap-6">
+              <PlanningCard />
+          </div>
 
           <p className="text-sm text-zinc-500">ID da sessão: {sessionId}</p>
         </div>
