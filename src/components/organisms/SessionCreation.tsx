@@ -2,11 +2,14 @@
 
 import { FormEvent, useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 export default function SessionCreation() {
   const [sessionName, setSessionName] = useState("");
   const [participantName, setParticipantName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,7 +35,9 @@ export default function SessionCreation() {
 
       const data = await response.json();
 
-      console.log("Sessão criada:", data);
+      router.push(
+        `/session/${data.id}?title=${encodeURIComponent(data.name)}&creator=${encodeURIComponent(data.owner.name)}`,
+      );
     } catch (error) {
       setErrorMessage("Não foi possível criar a sessão.");
       console.error(error);
