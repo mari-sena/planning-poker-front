@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-
+import { AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SessionCreation() {
@@ -39,7 +39,7 @@ export default function SessionCreation() {
         `/session/${data.id}?title=${encodeURIComponent(data.name)}&creator=${encodeURIComponent(data.owner.name)}`,
       );
     } catch (error) {
-      setErrorMessage("Não foi possível criar a sessão.");
+      setErrorMessage("Não foi possível criar a sessão. Tente novamente.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -92,7 +92,13 @@ export default function SessionCreation() {
           />
         </div>
 
-        {errorMessage && <p className="text-sm text-red-400">{errorMessage}</p>}
+        {errorMessage && (
+          <div className="flex items-start gap-3 rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-red-300">
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+
+            <p className="text-sm font-medium">{errorMessage}</p>
+          </div>
+        )}
 
         <button
           type="submit"
