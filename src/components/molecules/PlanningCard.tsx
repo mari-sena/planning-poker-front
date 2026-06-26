@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export function PlanningCard() {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
   const planningCards = [
     "0",
     "½",
@@ -20,13 +20,14 @@ export function PlanningCard() {
     "☕",
   ];
 
-  function handleSelectCard(card: string) {
+  function handleSelectCard(card: number) {
     setSelected(card);
   }
   return (
     <>
-      {planningCards.map((card) => (
+      {planningCards.map((index, card) => (
         <button
+          key={index}
           type="button"
           onClick={() => handleSelectCard(card)}
           className={`
